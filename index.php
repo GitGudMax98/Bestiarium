@@ -104,6 +104,9 @@ switch ($uri){
                     $response = $monsterController->createMonster(
                         $data['name'],
                         (int)$data['heads'],
+                        // On passe des valeurs vides car c'est pollination qui s'occupe de la description et img
+                        '',
+                        '',
                         (int)$user_id
                     );
 

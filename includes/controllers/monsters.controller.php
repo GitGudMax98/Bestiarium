@@ -16,25 +16,155 @@ class MonsterController {
         $this->pdo = $db->pdo;
     }
 
+
+    /**
+     * Lecture et rendu d'un prompt à partir d'un fichier (en l'occurence les fichiers monster.description.prompt
+     * et monster.image.prompt contenus dans le dossier pollinations
+     * @param string $filePath Le chemin vers le fichier monster.description.prompt ou monster.image.prompt
+     * @param array $vars les variables {} qui permettent de générer un prompt et donc une description dynamique,
+     * en l'occurence name et heads
+     * 
+     * @return string $prompt le prompt dynamique qu'on utilise ensuite dans les méthodes generateDescription
+     * et generateImg
+     */
+    private function renderPrompt(string $filePath, array $vars): string {
+        if (!file_exists($filePath)) {
+            throw new Exception("Prompt file not found: " . $filePath);
+        }
+
+        $prompt = file_get_contents($filePath);
+        foreach ($vars as $key => $value) {
+            $prompt = str_replace('{' . $key . '}', $value, $prompt);
+        }
+        return trim($prompt);
+    }
+
+    /**
+     * Génère et renvoie un JSON qui contient une description qui contient également les statistiques d'attaque, 
+     * de défense et de vie du monstre via Pollinations.AI
+     * @param string $name Le nom du monstre contenu dans son constructeur
+     * @param int $heads Le nombre de têtes du monstre contenu dans son constructeur 
+     * @return JSON
+     */
+    private function generateDescription(string $name, int $heads): array {
+        $promptPath = __DIR__ . '/../pollinations/monster.description.prompt';
+        $prompt = $this->renderPrompt($promptPath, [
+            'name' => $name,
+            'heads' => $heads
+        ]);
+
+        // 🧩 On ajoute au prompt l'instruction claire pour Pollinations :
+        $prompt .= "\n\nDonne la réponse UNIQUEMENT en JSON au format suivant :
+        {
+        \"description\": \"...description immersive et détaillée du monstre...\",
+        \"attack_score\": nombre_entre_1_et_100,
+        \"defense_score\": nombre_entre_1_et_100,
+        \"health_score\": nombre_entre_50_et_500
+        }";
+
+        $url = "https://text.pollinations.ai/";
+        $data = ["messages" => [["role" => "user", "content" => $prompt]]];
+
+        $options = [
+            "http" => [
+                "header"  => "Content-type: application/json\r\n",
+                "method"  => "POST",
+                "content" => json_encode($data),
+                "timeout" => 30
+            ]
+        ];
+
+        $context = stream_context_create($options);
+        $result = @file_get_contents($url, false, $context);
+
+        if (!$result) {
+            return [
+                "description" => "Une créature mystérieuse dont on ignore tout...",
+                "attack_score" => rand(10, 50),
+                "defense_score" => rand(10, 50),
+                "health_score" => rand(100, 300)
+            ];
+        }
+
+        // 🧠 Tentative de décodage JSON
+        $decoded = json_decode($result, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && isset($decoded['description'])) {
+            return $decoded;
+        }
+
+        // Si Pollinations ne renvoie pas du JSON valide
+        return [
+            "description" => trim(strip_tags($result)),
+            "attack_score" => rand(10, 100),
+            "defense_score" => rand(10, 100),
+            "health_score" => rand(50, 500)
+        ];
+    }
+
+    /**
+     * Génère une image via Pollinations.AI
+     * @param string $name Le nom du monstre contenu dans son constructeur
+     * @param int $heads Le nombre de têtes du monstre contenu dans son constructeur
+     * @return string l'url de l'image (cette dernière est stockée dans le dossier images du projet)
+     */
+    private function generateImage(string $name, int $heads): string {
+        $promptPath =__DIR__ . '/../pollinations/monster.image.prompt';
+        $prompt = $this->renderPrompt($promptPath, [
+            'name' => $name,
+            'heads' => $heads
+        ]);
+
+        $url = "https://image.pollinations.ai/prompt/" . urlencode($prompt);
+        $imageData = @file_get_contents($url);
+
+        if (!$imageData) {
+            return "default_monster.png";
+        }
+
+        $imageDir = __DIR__ . '/../../images/';
+        if (!file_exists($imageDir)) mkdir($imageDir, 0777, true);
+
+        $filename = 'monster_' . time() . '.png';
+        file_put_contents($imageDir . $filename, $imageData);
+
+        return $filename;
+    }
+
     /**
      * @param string $name
      * @param int $heads
      * @param int $user_id
+     * @param string $description
+     * @param string $img
      * @return string JSON contenant le message de succès et les infos du monstre créé
      * 
-     * Méthode de création d'un nouveau monstre qui posséde un nom, un nombre de têtes, ainsi que l'ID de
-     * l'utilisateur qui l'a créé (on récupére l'ID de l'utilisateur connecté par son token). 
+     * Méthode de création d'un nouveau monstre qui posséde un nom, un nombre de têtes, 
+     * une description et image généré par pollinations.ai à partir de prompts contenus dans
+     * le dossier pollinations ainsi que l'ID de l'utilisateur qui l'a créé 
+     * (on récupére l'ID de l'utilisateur connecté par son token). 
+     * 
      * Renvoie un Json avec message de succès et les infos du nouveau monstre
      */
-    public function createMonster(string $name, int $heads, int $user_id){
+    public function createMonster(string $name, int $heads, string $description, string $img, int $user_id){
+
+
+        $generation = $this->generateDescription($name, $heads);
+
+        $description = $generation['description'];
+        $attack_score = $generation['attack_score'];
+        $defense_score = $generation['defense_score'];
+        $health_score = $generation['health_score'];
+
+        $img = $this->generateImage($name, $heads);
 
         /** Création d'une nouvelle instance d'un monstre */
-        $monster = new Monster($name, $heads);
+        $monster = new Monster($name, $heads, $attack_score, $defense_score, $health_score, $description, $img);
 
         // Requête SQL
         $request = "
-            INSERT INTO monsters (name, heads, user_id)
-            VALUES (:name, :heads, :user_id)
+            INSERT INTO monsters (name, heads, attack_score, defense_score, health_score, description, img, user_id)
+            VALUES (:name, :heads, :attack_score, :defense_score, :health_score, :description, :img, :user_id)
         ";
 
         // Prépare et exécute la requête SQL avec les valeurs du monstre créé
@@ -42,6 +172,11 @@ class MonsterController {
         $stmt->execute([
             'name' => $monster->getName(),
             'heads' => $monster->getHeads(),
+            'description' => $monster->getDescription(),
+            'attack_score' => $monster->getAttackScore(),
+            'defense_score' => $monster->getDefenseScore(),
+            'health_score' => $monster->getHealthScore(),
+            'img' => $monster->getImg(),
             'user_id' => $user_id
         ]);
 
@@ -55,6 +190,11 @@ class MonsterController {
                 'id' => $monster->getId(),
                 'name' => $monster->getName(),
                 'heads' => $monster->getHeads(),
+                'attack_score' => $monster->getAttackScore(),
+                'defense_score' => $monster->getDefenseScore(),
+                'health_score' => $monster->getHealthScore(),
+                'description' => $monster->getDescription(),
+                'img' => $monster->getImg(),
                 'user_id' => $user_id
             ]
         ];

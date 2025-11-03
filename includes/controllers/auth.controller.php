@@ -32,9 +32,23 @@ use Firebase\JWT\Key;
      */
     public function register(string $username, string $email, string $password){
 
-        /** Rajouter une vérification si email déjà utilisé ? */
+ 
+        /** Vérifie que l'email est valide */
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(400);
+            return json_encode(['error' => 'Adresse email invalide']);
+        }
 
-        /** Création d'une nouvelle instance d'un utilisateur */
+        /** Vérifie si l'email est déjà utilisé */
+        $checkStmt = $this->pdo->prepare("SELECT id FROM users WHERE email = :email");
+        $checkStmt->execute(['email' => $email]);
+        if ($checkStmt->fetch()) {
+            http_response_code(409); // Conflit : email déjà existant
+            return json_encode(['error' => 'Cet email est déjà utilisé']);
+        }
+
+
+        /** Création d'une   nouvelle instance d'un utilisateur */
         $user = new User($username, $email, $password);
 
         // Requête SQL

@@ -91,6 +91,12 @@ class User{
      * Attribue un mot de passe à l'utilisateur
      */
     public function setPassword($password) : self{
+
+        // On vérifie que le mot de passe n'est pas vide
+        if (empty($password)) {
+            throw new InvalidArgumentException("Le mot de passe ne peut pas être vide");
+        }
+        
         //  On hash le mot de passe ici
         $this->password = password_hash($password, PASSWORD_DEFAULT);
 
