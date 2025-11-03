@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../models/Monster.class.php';
 require_once __DIR__ . '/../db/Db.connector.php';
+require_once __DIR__ . '/../controllers/types.controller.php';
 
 class MonsterController {
 
@@ -46,10 +47,11 @@ class MonsterController {
      * @param int $heads Le nombre de têtes du monstre contenu dans son constructeur 
      * @return JSON
      */
-    private function generateDescription(string $name, int $heads): array {
+    private function generateDescription(string $name, string $type, int $heads): array {
         $promptPath = __DIR__ . '/../pollinations/monster.description.prompt';
         $prompt = $this->renderPrompt($promptPath, [
             'name' => $name,
+            'type' => $type,
             'heads' => $heads
         ]);
 
@@ -108,10 +110,11 @@ class MonsterController {
      * @param int $heads Le nombre de têtes du monstre contenu dans son constructeur
      * @return string l'url de l'image (cette dernière est stockée dans le dossier images du projet)
      */
-    private function generateImage(string $name, int $heads): string {
+    private function generateImage(string $name, string $type, int $heads): string {
         $promptPath =__DIR__ . '/../pollinations/monster.image.prompt';
         $prompt = $this->renderPrompt($promptPath, [
             'name' => $name,
+            'type' => $type,
             'heads' => $heads
         ]);
 
@@ -133,44 +136,49 @@ class MonsterController {
 
     /**
      * @param string $name
+     * @param string $type
      * @param int $heads
      * @param int $user_id
      * @param string $description
      * @param string $img
      * @return string JSON contenant le message de succès et les infos du monstre créé
      * 
-     * Méthode de création d'un nouveau monstre qui posséde un nom, un nombre de têtes, 
+     * Méthode de création d'un nouveau monstre qui posséde un nom, un type, un nombre de têtes, 
      * une description et image généré par pollinations.ai à partir de prompts contenus dans
      * le dossier pollinations ainsi que l'ID de l'utilisateur qui l'a créé 
      * (on récupére l'ID de l'utilisateur connecté par son token). 
      * 
      * Renvoie un Json avec message de succès et les infos du nouveau monstre
      */
-    public function createMonster(string $name, int $heads, string $description, string $img, int $user_id){
+    public function createMonster(string $name, string $type, int $heads, string $description, string $img, int $user_id){
 
+        $typesController = new TypesController();
+        $typeObj = $typesController->getOrCreateType($type);
+        $typeName = $typeObj->getName();
 
-        $generation = $this->generateDescription($name, $heads);
+        $generation = $this->generateDescription($name, $typeName, $heads);
 
         $description = $generation['description'];
         $attack_score = $generation['attack_score'];
         $defense_score = $generation['defense_score'];
         $health_score = $generation['health_score'];
 
-        $img = $this->generateImage($name, $heads);
+        $img = $this->generateImage($name, $typeName, $heads);
 
         /** Création d'une nouvelle instance d'un monstre */
-        $monster = new Monster($name, $heads, $attack_score, $defense_score, $health_score, $description, $img);
+        $monster = new Monster($name, $typeName, $heads, $attack_score, $defense_score, $health_score, $description, $img);
 
         // Requête SQL
         $request = "
-            INSERT INTO monsters (name, heads, attack_score, defense_score, health_score, description, img, user_id)
-            VALUES (:name, :heads, :attack_score, :defense_score, :health_score, :description, :img, :user_id)
+            INSERT INTO monsters (name, type, heads, attack_score, defense_score, health_score, description, img, user_id)
+            VALUES (:name, :type, :heads, :attack_score, :defense_score, :health_score, :description, :img, :user_id)
         ";
 
         // Prépare et exécute la requête SQL avec les valeurs du monstre créé
         $stmt = $this->pdo->prepare($request);
         $stmt->execute([
             'name' => $monster->getName(),
+            'type' => $monster->getType(),
             'heads' => $monster->getHeads(),
             'description' => $monster->getDescription(),
             'attack_score' => $monster->getAttackScore(),
@@ -189,6 +197,7 @@ class MonsterController {
             'monster' => [
                 'id' => $monster->getId(),
                 'name' => $monster->getName(),
+                'type' => $monster->getType(),
                 'heads' => $monster->getHeads(),
                 'attack_score' => $monster->getAttackScore(),
                 'defense_score' => $monster->getDefenseScore(),

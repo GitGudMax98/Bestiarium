@@ -9,24 +9,27 @@
         private int $attack_score;
         private int $defense_score;
         private int $health_score;
+        private string $type;
 
         /**
          * @param string $name
          * @param int $heads
+         * @param string $type
          * @param int $attack_score
          * @param int $defense_score
          * @param int $health_score
          * @param string $description
          * @param string $img
-         * Constructeur type d'un monstre qui posséde un nom, un nombre de têtes, un score d'attaque, de défense
-         * et de vie ainsi qu'une description et une image (les stats, la description et l'image sont
+         * Constructeur d'un monstre qui posséde un nom, un nombre de têtes, un type, un score d'attaque, 
+         * de défense et de vie ainsi qu'une description et une image (les stats, la description et l'image sont
          * générés avec Pollinations.ai avec des fichiers prompts dans le dossier pollinations et des méthodes
          * dans le monster controller)
          */
-        public function __construct(string $name, int $heads, int $attack_score, int $defense_score, int $health_score,
+        public function __construct(string $name, string $type, int $heads, int $attack_score, int $defense_score, int $health_score,
          string $description, string $img)
         {
             $this->setName($name);
+            $this->setType($type);
             $this->setHeads($heads);
             $this->setDescription($description);
             $this->setImg($img);
@@ -61,11 +64,31 @@
         }
 
         /**
+         * @param string $name
          * @return self
          * Attribue un nom au monstre 
          */
         public function setName($name) : self {
             $this->name = $name;
+
+            return $this;
+        }
+
+        /**
+         * @return string $type
+         * Retourne le type du monstre
+         */
+        public function getType() : string {
+            return $this->type;
+        }
+
+        /**
+         * @param string $type
+         * @return self
+         * Attribue un type au monstre 
+         */
+        public function setType($type) : self {
+            $this->type = $type;
 
             return $this;
         }
@@ -97,6 +120,7 @@
         }
 
         /**
+         * @param string $description
          * @return self
          * Attribue une description au monstre
          */
