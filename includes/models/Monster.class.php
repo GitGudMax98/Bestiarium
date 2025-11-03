@@ -9,12 +9,12 @@
         private int $attack_score;
         private int $defense_score;
         private int $health_score;
-        private string $type;
+        private int $type_id;
 
         /**
          * @param string $name
          * @param int $heads
-         * @param string $type
+         * @param int $type_id
          * @param int $attack_score
          * @param int $defense_score
          * @param int $health_score
@@ -25,11 +25,11 @@
          * générés avec Pollinations.ai avec des fichiers prompts dans le dossier pollinations et des méthodes
          * dans le monster controller)
          */
-        public function __construct(string $name, string $type, int $heads, int $attack_score, int $defense_score, int $health_score,
+        public function __construct(string $name, int $type_id, int $heads, int $attack_score, int $defense_score, int $health_score,
          string $description, string $img)
         {
             $this->setName($name);
-            $this->setType($type);
+            $this->setTypeId($type_id);
             $this->setHeads($heads);
             $this->setDescription($description);
             $this->setImg($img);
@@ -68,27 +68,27 @@
          * @return self
          * Attribue un nom au monstre 
          */
-        public function setName($name) : self {
+        public function setName(string $name) : self {
             $this->name = $name;
 
             return $this;
         }
 
         /**
-         * @return string $type
+         * @return int $type_ID
          * Retourne le type du monstre
          */
-        public function getType() : string {
-            return $this->type;
+        public function getTypeId() : int {
+            return $this->type_id;
         }
 
         /**
-         * @param string $type
+         * @param int $type_id
          * @return self
-         * Attribue un type au monstre 
+         * Attribue un type au monstre en lui passant l'id du type contenu dans la table types
          */
-        public function setType($type) : self {
-            $this->type = $type;
+        public function setTypeId(int $type_id) : self {
+            $this->type_id = $type_id;
 
             return $this;
         }
@@ -105,7 +105,7 @@
          * @return self
          * Attribue un nombre de têtes au monstre
          */
-        public function setHeads($heads) : self {
+        public function setHeads(int $heads) : self {
             $this->heads = $heads;
 
             return $this;
@@ -124,7 +124,7 @@
          * @return self
          * Attribue une description au monstre
          */
-        public function setDescription($description) : self {
+        public function setDescription(string $description) : self {
             $this->description = $description;
 
             return $this;
@@ -142,7 +142,7 @@
          * @return self
          * Attribute une image au monstre
          */
-        public function setImg($img) : self {
+        public function setImg(string $img) : self {
             $this->img = $img;
 
             return $this;
@@ -161,7 +161,7 @@
          * @return self
          * Attribute un score d'attaque au monstre
          */
-        public function setAttackScore($attack_score) : self {
+        public function setAttackScore(int $attack_score) : self {
             $this->attack_score = $attack_score;
 
             return $this;
@@ -180,7 +180,7 @@
          * @return self
          * Attribute un score de défense au monstre
          */
-        public function setDefenseScore($defense_score) : self {
+        public function setDefenseScore(int $defense_score) : self {
             $this->defense_score = $defense_score;
 
             return $this;
@@ -199,7 +199,7 @@
          * @return self
          * Attribute un score de points de vie au monstre
          */
-        public function setHealthScore($health_score) : self {
+        public function setHealthScore(int $health_score) : self {
             $this->health_score = $health_score;
 
             return $this;

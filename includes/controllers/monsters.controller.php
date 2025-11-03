@@ -152,10 +152,13 @@ class MonsterController {
      */
     public function createMonster(string $name, string $type, int $heads, string $description, string $img, int $user_id){
 
+        // Récupére ou créé le type et récupére l'ID
         $typesController = new TypesController();
         $typeObj = $typesController->getOrCreateType($type);
+        $type_id = $typeObj->getId();
         $typeName = $typeObj->getName();
 
+        // Génére description et stats
         $generation = $this->generateDescription($name, $typeName, $heads);
 
         $description = $generation['description'];
@@ -163,22 +166,32 @@ class MonsterController {
         $defense_score = $generation['defense_score'];
         $health_score = $generation['health_score'];
 
+        // Génére une image
         $img = $this->generateImage($name, $typeName, $heads);
 
         /** Création d'une nouvelle instance d'un monstre */
-        $monster = new Monster($name, $typeName, $heads, $attack_score, $defense_score, $health_score, $description, $img);
+        $monster = new Monster(
+            $name, 
+            $type_id, 
+            $heads,
+            $attack_score, 
+            $defense_score, 
+            $health_score, 
+            $description, 
+            $img
+        );
 
         // Requête SQL
         $request = "
-            INSERT INTO monsters (name, type, heads, attack_score, defense_score, health_score, description, img, user_id)
-            VALUES (:name, :type, :heads, :attack_score, :defense_score, :health_score, :description, :img, :user_id)
+            INSERT INTO monsters (name, type_id, heads, attack_score, defense_score, health_score, description, img, user_id)
+            VALUES (:name, :type_id, :heads, :attack_score, :defense_score, :health_score, :description, :img, :user_id)
         ";
 
         // Prépare et exécute la requête SQL avec les valeurs du monstre créé
         $stmt = $this->pdo->prepare($request);
         $stmt->execute([
             'name' => $monster->getName(),
-            'type' => $monster->getType(),
+            'type_id' => $monster->getTypeId(),
             'heads' => $monster->getHeads(),
             'description' => $monster->getDescription(),
             'attack_score' => $monster->getAttackScore(),
@@ -197,7 +210,7 @@ class MonsterController {
             'monster' => [
                 'id' => $monster->getId(),
                 'name' => $monster->getName(),
-                'type' => $monster->getType(),
+                'type_id' => $monster->getTypeId(),
                 'heads' => $monster->getHeads(),
                 'attack_score' => $monster->getAttackScore(),
                 'defense_score' => $monster->getDefenseScore(),
