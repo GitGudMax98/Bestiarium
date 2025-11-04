@@ -20,7 +20,7 @@
          * @param int $health_score
          * @param string $description
          * @param string $img
-         * Constructeur d'un monstre qui posséde un nom, un nombre de têtes, un type, un score d'attaque, 
+         * Constructeur d'un monstre qui posséde un nom, un nombre de têtes, un type_id, un score d'attaque, 
          * de défense et de vie ainsi qu'une description et une image (les stats, la description et l'image sont
          * générés avec Pollinations.ai avec des fichiers prompts dans le dossier pollinations et des méthodes
          * dans le monster controller)

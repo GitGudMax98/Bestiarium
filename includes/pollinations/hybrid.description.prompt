@@ -1,0 +1,10 @@
+Crée un monstre hybride en combinant deux créatures existantes : {parent1_name} et {parent2_name}.
+
+Voici les caractéristiques de ses parents :
+- {parent1_name} : attaque {p1_attack}, défense {p1_defense}, santé {p1_health}, {p1_heads} têtes.
+- {parent2_name} : attaque {p2_attack}, défense {p2_defense}, santé {p2_health}, {p2_heads} têtes.
+
+Imagine un nouveau monstre qui hérite de traits des deux parents.
+Mélange leurs caractéristiques physiques et leurs pouvoirs.
+Donne-lui un nom unique inspiré par ses deux origines.
+Crée une description immersive et cohérente avec leur univers.

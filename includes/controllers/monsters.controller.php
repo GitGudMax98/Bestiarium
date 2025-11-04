@@ -8,7 +8,7 @@ class MonsterController {
 
     private $pdo;
 
-        /**
+    /**
      * Initialise la connexion à la base de données avec dBConnector
      */
         public function __construct()
@@ -19,8 +19,8 @@ class MonsterController {
 
 
     /**
-     * Lecture et rendu d'un prompt à partir d'un fichier (en l'occurence les fichiers monster.description.prompt
-     * et monster.image.prompt contenus dans le dossier pollinations
+     * Lecture et rendu d'un prompt à partir d'un fichier 
+     * 
      * @param string $filePath Le chemin vers le fichier monster.description.prompt ou monster.image.prompt
      * @param array $vars les variables {} qui permettent de générer un prompt et donc une description dynamique,
      * en l'occurence name et heads
@@ -41,15 +41,27 @@ class MonsterController {
     }
 
     /**
-     * Génère et renvoie un JSON qui contient une description qui contient également les statistiques d'attaque, 
+     * @param string $fileName le nom du fichier de prompt
+     * @param array $vars variables du prompt pour que ce dernier soit customizé
+     * @return string retourne le prompt avec la methode renderPrompt
+     */
+    public function customPrompt($fileName, array $vars) : string{
+        $filePath = __DIR__ . '/../pollinations/' . $fileName;
+        return $this->renderPrompt($filePath, $vars);
+    }
+
+    /**
+     * Génère et renvoie un JSON qui contient une description, les statistiques d'attaque, 
      * de défense et de vie du monstre via Pollinations.AI
-     * @param string $name Le nom du monstre contenu dans son constructeur
-     * @param int $heads Le nombre de têtes du monstre contenu dans son constructeur 
+     * 
+     * @param string $name Le nom du monstre
+     * @param string $type Le type du monstre
+     * @param int $heads Le nombre de têtes du monstre
      * @return JSON
      */
     private function generateDescription(string $name, string $type, int $heads): array {
-        $promptPath = __DIR__ . '/../pollinations/monster.description.prompt';
-        $prompt = $this->renderPrompt($promptPath, [
+        
+        $prompt = $this->customPrompt('monster.description.prompt', [
             'name' => $name,
             'type' => $type,
             'heads' => $heads
@@ -106,13 +118,15 @@ class MonsterController {
 
     /**
      * Génère une image via Pollinations.AI
-     * @param string $name Le nom du monstre contenu dans son constructeur
-     * @param int $heads Le nombre de têtes du monstre contenu dans son constructeur
+     * 
+     * @param string $name Le nom du monstre
+     * @param string $type Le type du monstrde
+     * @param int $heads Le nombre de têtes du monstre
      * @return string l'url de l'image (cette dernière est stockée dans le dossier images du projet)
      */
     private function generateImage(string $name, string $type, int $heads): string {
-        $promptPath =__DIR__ . '/../pollinations/monster.image.prompt';
-        $prompt = $this->renderPrompt($promptPath, [
+        
+        $prompt = $this->customPrompt('monster.image.prompt', [
             'name' => $name,
             'type' => $type,
             'heads' => $heads
@@ -138,21 +152,16 @@ class MonsterController {
      * @param string $name
      * @param string $type
      * @param int $heads
-     * @param int $user_id
-     * @param string $description
-     * @param string $img
      * @return string JSON contenant le message de succès et les infos du monstre créé
      * 
-     * Méthode de création d'un nouveau monstre qui posséde un nom, un type, un nombre de têtes, 
-     * une description et image généré par pollinations.ai à partir de prompts contenus dans
-     * le dossier pollinations ainsi que l'ID de l'utilisateur qui l'a créé 
-     * (on récupére l'ID de l'utilisateur connecté par son token). 
+     * Méthode de création d'un nouveau monstre, l'utilisateur rentre un nom, un type,
+     * et un nombre de tête et on récupére l'ID de l'utilisateur qui l'a créé par son token
      * 
      * Renvoie un Json avec message de succès et les infos du nouveau monstre
      */
-    public function createMonster(string $name, string $type, int $heads, string $description, string $img, int $user_id){
+    public function createMonster(string $name, string $type, int $heads, int $user_id){
 
-        // Récupére ou créé le type et récupére l'ID
+        // Récupére ou créé le type et récupére son ID
         $typesController = new TypesController();
         $typeObj = $typesController->getOrCreateType($type);
         $type_id = $typeObj->getId();
@@ -160,7 +169,7 @@ class MonsterController {
 
         // Génére description et stats
         $generation = $this->generateDescription($name, $typeName, $heads);
-
+        
         $description = $generation['description'];
         $attack_score = $generation['attack_score'];
         $defense_score = $generation['defense_score'];

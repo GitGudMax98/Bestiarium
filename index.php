@@ -105,9 +105,6 @@ switch ($uri){
                         $data['name'],
                         $data['type'],
                         (int)$data['heads'],
-                        // On passe des valeurs vides car c'est pollination qui s'occupe de la description et img
-                        '',
-                        '',
                         (int)$user_id
                     );
 
