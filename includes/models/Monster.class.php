@@ -10,6 +10,7 @@
         private int $defense_score;
         private int $health_score;
         private int $type_id;
+        private bool $isHybrid = false;
 
         /**
          * @param string $name
@@ -205,5 +206,22 @@
             return $this;
         }
 
+        /**
+         * @return bool
+         * Retourne si le monstre est un hybride ou non
+         */
+        public function getIsHybrid(): bool {
+            return $this->isHybrid;
+        }
+
+        /**
+         * @param bool $isHybrid
+         * @return self
+         * Définit si le monstre est un hybride ou non
+         */
+        public function setIsHybrid(bool $isHybrid): self {
+            $this->isHybrid = $isHybrid;
+            return $this;
+        }
 
     }

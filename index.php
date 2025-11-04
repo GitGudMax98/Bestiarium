@@ -3,6 +3,7 @@
 // Appel des différents controller
 require_once __DIR__ . '/includes/controllers/auth.controller.php';
 require_once __DIR__ . '/includes/controllers/monsters.controller.php';
+require_once __DIR__ . '/includes/controllers/hybrids.controller.php';
 
 header('Content-Type: application/json');
 
@@ -162,5 +163,51 @@ switch ($uri){
             http_response_code(404);
             echo json_encode(['error' => 'Route non trouvée']);
             break;
+
+    // Route Hybrid
+
+        // Route pour créer un hybrid
+        case 'hybrid/create': 
+            if ($method === 'POST') {
+
+                $auth = new AuthController();
+
+                try {
+                    // Vérifie le token et récupère l'id utilisateur
+                    $user_id = $auth->verifyToken();
+                } catch (Exception $e) {
+                    http_response_code(401);
+                    echo json_encode(['error' => $e->getMessage()]);
+                    exit;
+                }
+
+                // Récupère les données envoyées dans le body
+                $data = json_decode(file_get_contents('php://input'), true);
+
+                // Vérifie que les infos nécessaires sont bien présentes
+                if (isset($data['parent1_id'], $data['parent2_id'])) {
+
+                    // Si oui crée l'hybrid avec le contrôleur
+                    $hybridController = new HybridController();
+                    $response = $hybridController->createHybrid(
+                        $data['parent1_id'],
+                        $data['parent2_id'],
+                        (int)$user_id
+                    );
+
+                    // Renvoie la réponse JSON
+                    echo $response;        
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Données manquantes : parent1_id et parent2_id requis']);
+                }
+
+            }else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Méthode non autorisée, utilisez POST']);
+            }
+
+            break;
+
 
 }

@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/Monster.controller.php';
-require_once __DIR__ . '/../models/HybridMonster.class.php';
+require_once __DIR__ . '/monsters.controller.php';
+require_once __DIR__ . '/../models/Hybrid.class.php';
 require_once __DIR__ . '/../controllers/types.controller.php';
 require_once __DIR__ . '/../db/Db.connector.php';
 
@@ -15,7 +15,10 @@ class HybridController extends MonsterController {
     }
 
     /**
-     * Pollinations : génère description + stats + têtes à partir des 2 parents
+     * @param array $p1 
+     * @param array $p2
+     * @return array $decoded
+     * Pollinations : génère description + stats + têtes à partir des 2 parents et de leurs informations
      */
     private function generateHybridDescription(array $p1, array $p2): array {
         $prompt = $this->customPrompt('hybrid.description.prompt', [
@@ -70,6 +73,12 @@ class HybridController extends MonsterController {
         ];
     }
 
+    /**
+     * @param string $name
+     * @param string $p1_name (nom du parent1)
+     * @param string $p2_name (nom du parent2)
+     * @return string $filename
+     */
     private function generateHybridImage(string $name, string $p1_name, string $p2_name): string {
         $prompt = $this->customPrompt('hybrid.image.prompt', [
             'name' => $name,
@@ -137,9 +146,9 @@ class HybridController extends MonsterController {
         // 🔹 Sauvegarde en BDD
         $stmt = $this->pdo->prepare("
             INSERT INTO monsters 
-            (name, type_id, heads, attack_score, defense_score, health_score, description, img, user_id, parent1_id, parent2_id, is_hybrid)
+            (name, type_id, heads, attack_score, defense_score, health_score, description, img, is_hybrid, user_id)
             VALUES 
-            (:name, :type_id, :heads, :attack_score, :defense_score, :health_score, :description, :img, :user_id, :parent1_id, :parent2_id, 1)
+            (:name, :type_id, :heads, :attack_score, :defense_score, :health_score, :description, :img, 1, :user_id)
         ");
 
         $stmt->execute([
@@ -152,8 +161,6 @@ class HybridController extends MonsterController {
             'description' => $hybrid->getDescription(),
             'img' => $hybrid->getImg(),
             'user_id' => $user_id,
-            'parent1_id' => $parent1_id,
-            'parent2_id' => $parent2_id
         ]);
 
         $hybrid->setId($this->pdo->lastInsertId());

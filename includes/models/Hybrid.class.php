@@ -25,6 +25,7 @@ class Hybrid extends Monster{
             $description, 
             $img
         );
+        $this->setIsHybrid(true);
     }
 
     /**

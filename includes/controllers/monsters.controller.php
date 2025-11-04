@@ -152,6 +152,7 @@ class MonsterController {
      * @param string $name
      * @param string $type
      * @param int $heads
+     * @param int $user_id (récupéré avec son token de connection)
      * @return string JSON contenant le message de succès et les infos du monstre créé
      * 
      * Méthode de création d'un nouveau monstre, l'utilisateur rentre un nom, un type,
