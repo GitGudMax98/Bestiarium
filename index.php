@@ -4,6 +4,7 @@
 require_once __DIR__ . '/includes/controllers/auth.controller.php';
 require_once __DIR__ . '/includes/controllers/monsters.controller.php';
 require_once __DIR__ . '/includes/controllers/hybrids.controller.php';
+require_once __DIR__ . '/includes/controllers/battles.controller.php';
 
 header('Content-Type: application/json');
 
@@ -139,7 +140,7 @@ switch ($uri){
                 }
             break;  
 
-        // Route pour récupérer un monstre spécifique par son ID d'un utilisateur connecté
+        // Route pour récupérer un monstre spécifique par son ID 
         case (str_starts_with($uri, 'monster/show/')): 
             if ($method === 'GET') {
                 $parts = explode('/', $uri); // découpe l'URL en segments dans un array
@@ -158,13 +159,33 @@ switch ($uri){
                 echo $monsterController->getMonsterById($monster_id, $user_id);
             }
             break;
+
+        // Route pour supprimer un monstre spécifique par son ID
+        case (str_starts_with($uri, 'monster/delete/')): 
+            if ($method === 'DELETE') {
+                $parts = explode('/', $uri); // découpe l'URL en segments dans un array
+                $monster_id = (int)$parts[2]; // ID = 3 ème élément de l'array
+
+                $auth = new AuthController();
+                try {
+                    $user_id = $auth->verifyToken();
+                } catch (Exception $e) {
+                    http_response_code(401);
+                    echo json_encode(['error' => $e->getMessage()]);
+                    exit;
+                }
+
+                $monsterController = new MonsterController();
+                echo $monsterController->deleteMonsterByID($monster_id, $user_id);
+            }
+            break;
             
         default: // Comportement par défault si la route n'est pas trouvée
             http_response_code(404);
             echo json_encode(['error' => 'Route non trouvée']);
             break;
 
-    // Route Hybrid
+    // Routes Hybrid
 
         // Route pour créer un hybrid
         case 'hybrid/create': 
@@ -209,5 +230,38 @@ switch ($uri){
 
             break;
 
+    // Routes Battle
+
+        // Route pour créer un combat
+        case 'battle/create':
+
+            if ($method === 'POST') {
+                $auth = new AuthController();
+                try {
+                    $user_id = $auth->verifyToken();
+                } catch (Exception $e) {
+                    http_response_code(401);
+                    echo json_encode(['error' => $e->getMessage()]);
+                    exit;
+                }
+
+                $data = json_decode(file_get_contents('php://input'), true);
+
+                if (isset($data['monster1_id'], $data['monster2_id'])) {
+                    $battleController = new BattleController();
+                    echo $battleController->createBattle(
+                        $data['monster1_id'], 
+                        $data['monster2_id'],
+                        $user_id
+                    );
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Données manquantes : monster1_id et monster2_id requis']);
+                }
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Méthode non autorisée, utilisez POST']);
+            }
+            break;
 
 }

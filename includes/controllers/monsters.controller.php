@@ -277,4 +277,46 @@ class MonsterController {
         return json_encode($monster, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @param int $monster_id
+     * @param int $user_id
+     * @return json
+     * 
+     * Méthode de suppression d'un monstre de la bdd, on check d'abord si il existe, si oui on 
+     * le delete et on renvoit un message de confirmation de la suppression ainsi que les informations
+     * du monstre supprimé
+     */
+    public function deleteMonsterByID(int $monster_id, int $user_id){
+
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM monsters 
+            WHERE id = :id AND user_id = :user_id
+        ");
+        $stmt->execute([
+            'id' => $monster_id,
+            'user_id' => $user_id
+        ]);
+        $monster = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$monster) {
+            http_response_code(404);
+            return json_encode(['error' => 'Monstre introuvable']);
+        }
+
+        $deleteStmt = $this->pdo->prepare("
+            DELETE FROM monsters 
+            WHERE id = :id AND user_id = :user_id
+        ");
+        
+        $deleteStmt->execute([
+            'id' => $monster_id,
+            'user_id' => $user_id
+        ]);
+
+        return json_encode([
+            'message' => 'Monstre supprimé avec succès',
+            'deleted_monster' => $monster
+        ], JSON_PRETTY_PRINT);
+    }
+
 }

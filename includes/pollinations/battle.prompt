@@ -1,0 +1,18 @@
+Premier combattant : {monster1_name}
+Type : {monster1_type}
+Têtes : {monster1_heads}
+Force d'attaque : {monster1_attack}
+Défense : {monster1_defense}
+Points de vie : {monster1_health}
+
+Second combattant : {monster2_name}
+Type : {monster2_type}
+Têtes : {monster2_heads}
+Force d'attaque : {monster2_attack}
+Défense : {monster2_defense}
+Points de vie : {monster2_health}
+
+Fais combattre ces deux monstres et renvoie uniquement un JSON au format suivant :
+{
+  "vainqueur": "nom_du_vainqueur"
+}

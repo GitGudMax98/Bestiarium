@@ -1,81 +1,139 @@
-Projet Bestiarium 
+# 🌌 Bestiarium API
 
-# Nom du projet
-[Brève description du projet]
+Une API REST en PHP natif pour créer et faire combattre des créatures mythologiques.
 
----
+## 📋 Présentation
 
-## 1. Contexte
-Ce projet vise à [résumer le problème / besoin] en utilisant [technologie principale] pour développer [produit ou service].
+Bestiarium est une API permettant de :
+- Se connecter / créer un compte
+- Créer ou supprimer des monstres avec génération IA de leurs caractéristiques (stats, description et images)
+- Fusionner des monstres pour créer des hybrides
+- Organiser des combats épiques entre deux créatures
 
----
+## 🛠 Technologies
 
-## 2. Objectifs
-- [Objectif 1]  
-- [Objectif 2]  
-- [Objectif 3]  
+- PHP 8+ (natif, sans framework)
+- SQLite + PDO
+- JWT (Firebase/php-jwt)
+- Pollinations.ai (génération IA)
+- Postman (tests API)
 
----
+## ⚙️ Installation
 
-## 3. Installation
+1. Cloner le projet :
+```bash
+git clone https://github.com/votre-compte/bestiarium.git
+cd bestiarium
+```
 
-### Prérequis
-- [OS / logiciels nécessaires]  
-- [Dépendances principales]
-- composer require firebase/php-jwt
+2. Installer les dépendances :
+```bash
+composer install
+```
 
-### Étapes
-1. Cloner le dépôt :  
-   `git clone [URL]`
-2. Installer les dépendances :  
-   `[commande]`
-3. Configurer l'environnement :  
-   `[instructions]`
-4. Lancer le projet :  
-   `[commande]`
+3. Lancer le serveur :
+```bash
+php -S localhost:8000
+```
 
----
+## 🔑 Tests avec Postman
 
-## 4. Technologies
-- Frontend : [Framework / Librairies]  
-- Backend : [Technologies / API]  
-- Base de données : [Nom de la BDD]
+L'API utilise JWT pour l'authentification. Voici comment tester avec Postman :
 
----
+1. Créer un compte :
+```http
+POST http://localhost:8000/register
+Content-Type: application/json
 
-## 5. Structure du projet
-- `/src` : code source  
-- `/public` : fichiers statiques  
-- `/docs` : documentation  
-- `/tests` : tests unitaires et fonctionnels
+{
+    "username": "test",
+    "email": "test@test.com",
+    "password": "password123"
+}
+```
 
----
+2. Se connecter pour obtenir un token :
+```http
+POST http://localhost:8000/login
+Content-Type: application/json
 
-## 6. Utilisation
-[Expliquer rapidement comment utiliser le projet / endpoints principaux de l'API]
+{
+    "email": "test@test.com",
+    "password": "password123"
+}
+```
 
----
+3. Utiliser le token reçu dans les requêtes suivantes :
+```http
+Headers:
+Authorization: Bearer <votre_token_jwt>
+Content-Type: application/json
+```
 
-## 7. Tests
-- Exécuter les tests : `[commande]`  
-- Outils : [ex. Jest, Mocha, PHPUnit]
+## 📡 Points d'entrée API
 
----
+### Authentification
+- `POST /register` - Créer un compte
+- `POST /login` - Se connecter
+- `POST /logout` - Se déconnecter
 
-## 8. Déploiement
-- Construire / lancer : `[commande]`  
-- Déploiement sur [Docker / serveur / autre]
+### Monstres
+- `POST /monster/create` - Créer un monstre
+```json
+{
+    "name": "Dragon",
+    "type": "Reptile",
+    "heads": 3
+}
+```
+- `GET /monster/all` - Liste des monstres
+- `GET /monster/show/{id}` - Détails d'un monstre
+- `DELETE /monster/delete/{id}` - Supprimer un monstre
 
----
+### Hybrides
+- `POST /hybrid/create` - Créer un hybride
+```json
+{
+    "parent1_id": 1,
+    "parent2_id": 2
+}
+```
 
-## 9. Ressources et documentation
-- Lien du repo GitHub : https://github.com/GitGudMax98/Bestiarium.git
-- [Lien vers API / docs]  
-- [Lien vers ressources techniques]  
+### Combats
+- `POST /battle/create` - Faire combattre deux monstres
+```json
+{
+    "monster1_id": 1,
+    "monster2_id": 2
+}
+```
 
+## 📁 Structure du projet
 
+```
+bestiarium/
+├── includes/
+│   ├── controllers/     # Contrôleurs (auth, monsters, etc.)
+│   ├── models/         # Classes modèles
+│   ├── db/            # Connexion base de données
+│   └── pollinations/  # Prompts pour l'IA
+├── database/          # Base de données SQLite et Seeder pour tests rapides
+├── vendor/           # Dépendances
+└── index.php         # Point d'entrée
+```
 
+## 🔧 Tests rapides
 
+Pour peupler la base de données avec des données de test :
 
-    
+```bash
+php seed.php
+```
 
+Cela va créer :
+- Un utilisateur de test (test@example.com / password123)
+- 5 monstres de base (Dragon, Hydre, Griffon, Cerbère, Chimère)
+
+La génération de ces données peut prendre un petit instant.
+
+Ces données permettent de tester rapidement les fonctionnalités de l'API.
