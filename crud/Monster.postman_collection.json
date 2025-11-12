@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "42f2c8ef-79cc-41eb-921e-c2fa3724aa19",
+		"name": "Monster",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42919979"
+	},
+	"item": [
+		{
+			"name": "create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{vault:json-web-token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Hulk\",\r\n    \"type\": \"Geant Vert\",\r\n    \"heads\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/monster/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"monster",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ok",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{vault:json-web-token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Cerberus\",\r\n    \"type\": \"Feu\",\r\n    \"heads\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/monster/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monster",
+								"create"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8000"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Nov 2025 12:50:56 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Monstre créé avec succès\",\n    \"monster\": {\n        \"id\": 24,\n        \"name\": \"Cerberus\",\n        \"type_id\": 22,\n        \"heads\": 6,\n        \"attack_score\": 85,\n        \"defense_score\": 70,\n        \"health_score\": 420,\n        \"description\": \"Cerberus, le Gardien Flamboyant, est une créature imposante d’un blanc incandescent, ses six têtes alignées comme un cortège de torches ardentes. Chaque tête possède des yeux brillant d’un éclat rouge pourpre, laissant échapper de petites gerbes de flammes comme si elles respiraient le feu lui-même. Son corps massif est recouvert d’écailles de magma noirâtre et d’or liquéfié, créant une armure naturelle qui semble vibrer sous la chaleur. Des crines de feu jaillissent de sa crête, ondulant comme un incendie contrôlé, et ses griffes acérées évoquent des lames de lave. Sa queue, serpentiforme, s’enroule dans un halo de flammes oscillantes, et ses naseaux crachent de petites volutes de fumée. Sur le plan de la personnalité, Cerberus est farouche, loyal envers ses maîtres et implacable face à tout intrus. Son tempérament ardent le rend aussi tempétueux que le feu qu’il manie, tout en étant noble et protecteur dans la défense de ses terres. Selon la légende, il serait né du cœur du volcan primordial, une incarnation divine forgée par les anciens dieux pour garder les portes de l’au-delà, mêlant la férocité du feu à la vigilance d’un gardien ultime.\",\n        \"img\": \"monster_1762692656.png\",\n        \"user_id\": 8\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "all",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/monster/all",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"monster",
+						"all"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ok",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monster/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monster",
+								"all"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8000"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Nov 2025 12:51:15 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"user_id\": 8,\n    \"monsters\": [\n        {\n            \"id\": 23,\n            \"name\": \"Glacius\",\n            \"heads\": 8,\n            \"attack_score\": 82,\n            \"defense_score\": 88,\n            \"health_score\": 420,\n            \"description\": \"Glacius est un monstre gigantesque aux huit têtes serpentant comme des branches glacées d’un arbre mort, chacune ornée de yeux luminescents d’un bleu glacial. Sa peau est une cuirasse de glace translucide, craquelée par endroits, laissant apparaître des veines de glace plus profondes qui pulsent d’une énergie froide. Son corps massif, soutenu par des jambes épaisses et hérissées de pics glacés, évoque un spectre de l’hiver éternel. Chaque tête possède une mâchoire puissante garnie de dents de glace tranchantes, capable de projeter des rafales de vent glacé ou des vagues de froid extrême. Son souffle est un souffle glacé qui fait geler tout sur son passage, et ses mouvements sont à la fois fluides et terriblement précis. La légende raconte qu’il a été forgé dans les abysses gelés du royaume oublié, né du souffle glacé d’un ancien dieu de la tempête, et qu’il veille sur un trésor d’ice éternel, prêt à congeler le cœur de tout intrus qui ose s’approcher.\",\n            \"img\": \"monster_1762692632.png\",\n            \"is_hybrid\": 0,\n            \"type_id\": 21,\n            \"user_id\": 8,\n            \"createdAt\": \"2025-11-09 12:50:32\"\n        },\n        {\n            \"id\": 24,\n            \"name\": \"Cerberus\",\n            \"heads\": 6,\n            \"attack_score\": 85,\n            \"defense_score\": 70,\n            \"health_score\": 420,\n            \"description\": \"Cerberus, le Gardien Flamboyant, est une créature imposante d’un blanc incandescent, ses six têtes alignées comme un cortège de torches ardentes. Chaque tête possède des yeux brillant d’un éclat rouge pourpre, laissant échapper de petites gerbes de flammes comme si elles respiraient le feu lui-même. Son corps massif est recouvert d’écailles de magma noirâtre et d’or liquéfié, créant une armure naturelle qui semble vibrer sous la chaleur. Des crines de feu jaillissent de sa crête, ondulant comme un incendie contrôlé, et ses griffes acérées évoquent des lames de lave. Sa queue, serpentiforme, s’enroule dans un halo de flammes oscillantes, et ses naseaux crachent de petites volutes de fumée. Sur le plan de la personnalité, Cerberus est farouche, loyal envers ses maîtres et implacable face à tout intrus. Son tempérament ardent le rend aussi tempétueux que le feu qu’il manie, tout en étant noble et protecteur dans la défense de ses terres. Selon la légende, il serait né du cœur du volcan primordial, une incarnation divine forgée par les anciens dieux pour garder les portes de l’au-delà, mêlant la férocité du feu à la vigilance d’un gardien ultime.\",\n            \"img\": \"monster_1762692656.png\",\n            \"is_hybrid\": 0,\n            \"type_id\": 22,\n            \"user_id\": 8,\n            \"createdAt\": \"2025-11-09 12:50:56\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "show",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/monster/show/23",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"monster",
+						"show",
+						"23"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ok",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monster/show/23",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monster",
+								"show",
+								"23"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8000"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Nov 2025 12:51:38 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 23,\n    \"name\": \"Glacius\",\n    \"heads\": 8,\n    \"attack_score\": 82,\n    \"defense_score\": 88,\n    \"health_score\": 420,\n    \"description\": \"Glacius est un monstre gigantesque aux huit têtes serpentant comme des branches glacées d’un arbre mort, chacune ornée de yeux luminescents d’un bleu glacial. Sa peau est une cuirasse de glace translucide, craquelée par endroits, laissant apparaître des veines de glace plus profondes qui pulsent d’une énergie froide. Son corps massif, soutenu par des jambes épaisses et hérissées de pics glacés, évoque un spectre de l’hiver éternel. Chaque tête possède une mâchoire puissante garnie de dents de glace tranchantes, capable de projeter des rafales de vent glacé ou des vagues de froid extrême. Son souffle est un souffle glacé qui fait geler tout sur son passage, et ses mouvements sont à la fois fluides et terriblement précis. La légende raconte qu’il a été forgé dans les abysses gelés du royaume oublié, né du souffle glacé d’un ancien dieu de la tempête, et qu’il veille sur un trésor d’ice éternel, prêt à congeler le cœur de tout intrus qui ose s’approcher.\",\n    \"img\": \"monster_1762692632.png\",\n    \"is_hybrid\": 0,\n    \"type_id\": 21,\n    \"user_id\": 8,\n    \"createdAt\": \"2025-11-09 12:50:32\"\n}"
+				}
+			]
+		},
+		{
+			"name": "delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/monster/delete/25",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"monster",
+						"delete",
+						"25"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ok",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monster/delete/25",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monster",
+								"delete",
+								"25"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8000"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Nov 2025 12:52:43 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Monstre supprimé avec succès\",\n    \"deleted_monster\": {\n        \"id\": 25,\n        \"name\": \"Hulk\",\n        \"heads\": 1,\n        \"attack_score\": 85,\n        \"defense_score\": 70,\n        \"health_score\": 450,\n        \"description\": \"Dans l'obscurité brumeuse d’un univers fantasy, émerge Hulk, un géant vert colossal à la peau épaisse comme du roc forgé par la vulcanisation. Sa tête proéminente, dotée d’yeux jaunes perçants et d'une mâchoire massive, repose sur un cou puissant encadré de crêtes osseuses. Ses épaules larges projettent une silhouette titanesque, recouverte d’arêtes, de muscles saillants et de cicatrices anciennes. Ses bras, démesurés, terminent par des mains capables de briser la roche ou de réaliser des gestes presque protecteurs. Hulk se déplace lentement mais avec une force dévastatrice, sa peau émettant une lueur verte phosphorescente dans l’obscurité. Son expression oscille entre colère déchaînée et une précieuse lueur de conscience, révélant une personnalité à la fois brutale et complexe. Son origine remonte à une ancienne malédiction d’un mage oublié, qui, tentant de créer une créature invincible pour défendre un royaume en péril, donna vie à ce géant vert, à la fois protecteur et destructeur, inscrit dans l’éternel conflit entre la vie et la damnation.\",\n        \"img\": \"monster_1762692736.png\",\n        \"is_hybrid\": 0,\n        \"type_id\": 23,\n        \"user_id\": 8,\n        \"createdAt\": \"2025-11-09 12:52:16\"\n    }\n}"
+				}
+			]
+		}
+	]
+}

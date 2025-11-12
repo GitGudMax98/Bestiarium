@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "2f3284fc-5ca3-4781-ad44-8b98219676ae",
+		"name": "Battle",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42919979"
+	},
+	"item": [
+		{
+			"name": "create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"monster1_id\": 23,\r\n  \"monster2_id\": 24\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/battle/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"battle",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ok",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"monster1_id\": 23,\r\n  \"monster2_id\": 24\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/battle/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"battle",
+								"create"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8000"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Nov 2025 12:57:25 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.4.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Combat créé avec succès\",\n    \"battle\": {\n        \"id\": 10,\n        \"monster1\": \"Glacius\",\n        \"monster2\": \"Cerberus\",\n        \"vainqueur\": \"Glacius\",\n        \"perdant_supprime\": \"Cerberus\"\n    }\n}"
+				}
+			]
+		}
+	]
+}
